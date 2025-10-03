@@ -1,4 +1,6 @@
 import { Company } from "../models/companymodel.js";
+import cloudinary from "../utils/cloudinary.js";
+import getDataUri from "../utils/datauri.js";
 
 export const registerCompany = async (req, res) => {
   try {
@@ -88,36 +90,54 @@ export const getCompanyById = async (req, res) => {
   }
 };
 
+
 export const updateCompany = async (req, res) => {
   try {
-    const { name, description, website, location } = req.body;
-    const file = req.file;
+    // Safely destructure
+    const { name, description, website, location } = req.body || {};
+    let logo;
 
-    //cloudary
+    // Only upload file if provided
+    if (req.file) {
+      const fileUri = getDataUri(req.file);
+      const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+      logo = cloudResponse.secure_url;
+    }
 
-    const updateData = { name, description, website, location };
-
-    const company = await Company.findByIdAndUpdate(req.params.id, updateData, {
-      new: true,
-    });
-
-    if (!company) {
-      return res.status(404).json({
-        success: false,
-        message: "Company is not found",
+    // If no fields and no file, return 400
+    if (
+      name === undefined &&
+      description === undefined &&
+      website === undefined &&
+      location === undefined &&
+      !logo
+    ) {
+      return res.status(400).json({ 
+        message: "No data provided to update", 
+        success: false 
       });
     }
 
+    const updateData = { name, description, website, location };
+    if (logo) updateData.logo = logo;
+
+    const company = await Company.findByIdAndUpdate(req.params.id, updateData, { new: true });
+
+    if (!company) {
+      return res.status(404).json({ message: "Company not found!", success: false });
+    }
+
     return res.status(200).json({
-      message: "Company is Updated Successfully",
-      company,
+      message: "Company information updated.",
       success: true,
+      company
     });
+
   } catch (error) {
-    console.log(error);
+    console.log("Update Company Error:", error);
     return res.status(500).json({
-      message: "Company is not Updated Successfully",
-      success: false,
+      message: "An error occurred while updating company information.",
+      success: false
     });
   }
 };

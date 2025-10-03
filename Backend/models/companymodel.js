@@ -9,7 +9,7 @@ const companySchema =new mongoose.Schema({
         
     },
     website:{
-        type:Number,
+        type:String ,
        
     },
     location:{

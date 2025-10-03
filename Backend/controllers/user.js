@@ -1,24 +1,23 @@
 import { User } from "../models/usermodel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import getDataUri from "../utils/datauri.js";
+import cloudinary from "../utils/cloudinary.js";
+
 
 export const register = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, password, role } = req.body;
+         
         if (!fullname || !email || !phoneNumber || !password || !role) {
-            return res.status(400).json({
-                success: false,
-                message: "Some data is missing",
-            });
+            return res.status(400).json({ message: "All fields are required", success: false });
         }
+        const file = req.file; 
+        const fileUri = getDataUri(file);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({
-                message: "User already exists with this email.",
-                success: false,
-            });
-        }
+        const user = await User.findOne({ email });
+        if (user) return res.status(400).json({ message: "User already exist with this email", success: false });
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -28,20 +27,19 @@ export const register = async (req, res) => {
             phoneNumber,
             password: hashedPassword,
             role,
+            profile: {
+                profilePhoto: cloudResponse.secure_url
+            }
         });
 
-        return res.status(200).json({
-            success: true,
-            message: "Sign Up Successfully",
+        return res.status(201).json({
+            message: "Account created successfully.",
+            success: true
         });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({
-            success: false,
-            message: "Something happened during registration",
-        });
     }
-};
+}
 
 export const login = async (req, res) => {
     try {
@@ -120,13 +118,13 @@ export const logout = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { fullname, email, phoneNumber, bio, skills } = req.body;
-        const userId = req.id;
+        const userId = req.id; // should be set by auth middleware
+        const file = req.file; // multer must be used for file upload
 
         let skillsArray;
-        if(skills){
-            skillsArray = skills.split(",");
+        if (skills && typeof skills === "string") {
+            skillsArray = skills.split(",").map(skill => skill.trim());
         }
-        
 
         const user = await User.findById(userId);
         if (!user) {
@@ -136,11 +134,18 @@ export const updateProfile = async (req, res) => {
             });
         }
 
-        if(fullname) user.fullname = fullname;
-        if(email) user.email = email;
-        if(phoneNumber) user.phoneNumber = phoneNumber;
-        if(bio) user.profile.bio = bio;
-        if(skills) user.profile.skills = skillsArray;
+        if (fullname) user.fullname = fullname;
+        if (email) user.email = email;
+        if (phoneNumber) user.phoneNumber = phoneNumber;
+        if (bio) user.profile.bio = bio;
+        if (skillsArray) user.profile.skills = skillsArray;
+
+        if (file) {
+            const fileUri = getDataUri(file);
+            const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            user.profile.resume = cloudResponse.secure_url;
+            user.profile.resumeOriginalName = file.originalname;
+        }
 
         await user.save();
 
@@ -159,7 +164,7 @@ export const updateProfile = async (req, res) => {
             user: updatedUser,
         });
     } catch (error) {
-        console.log(error);
+        console.error("Update Profile Error:", error);
         return res.status(500).json({
             message: "Profile not updated",
             success: false,

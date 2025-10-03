@@ -7,6 +7,8 @@ export const applyjob = async (req, res) => {
   try {
     const userId = req.id;
     const jobId = req.params.id;
+    console.log("User ID:", req.id);
+    console.log("Job ID:", req.params.id);
 
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
       return res.status(400).json({
@@ -19,6 +21,8 @@ export const applyjob = async (req, res) => {
       job: jobId,
       applicant: userId,
     });
+
+    
 
     if (existingApplication) {
       return res.status(400).json({

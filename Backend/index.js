@@ -11,15 +11,15 @@ import applicationroute from "./route/applicationroute.js"
 import userroute from "./route/userroute.js";
 
 // db connection
-import connectDB from "./utils/db.js";
+import connectDB from "./db/connection.js";
 
 dotenv.config();
 
 const app = express();
 
 // middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // parse JSON
+app.use(express.urlencoded({ extended: true })); 
 app.use(cookieParser());
 
 const corsOptions = {
