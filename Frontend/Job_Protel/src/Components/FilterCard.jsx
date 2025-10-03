@@ -22,32 +22,40 @@ const filterData = [
 const FilterCard = () => {
     const [selectedValue, setSelectedValue] = useState('');
     const dispatch = useDispatch();
+
     const handleChange = (value) => {
         setSelectedValue(value);
     };
+
     useEffect(() => {
         dispatch(setSearchText(selectedValue));
-    }, [selectedValue])
+    }, [selectedValue, dispatch]);
 
     return (
-        <div className='w-full bg-white p-3 rounded-md'>
-            <div className='flex items-center justify-between'>
-                <h1 className='font-bold text-lg'>Filter Jobs</h1>
+        <div className="w-full lg:w-64 bg-white p-4 rounded-xl shadow-lg border border-gray-200 sticky top-6">
+            <div className="flex items-center justify-between mb-3">
+                <h1 className="font-bold text-xl text-gray-800">Filter Jobs</h1>
             </div>
-            <hr className='mt-3' />
-            <RadioGroup value={selectedValue} onValueChange={handleChange}>
+            <hr className="border-gray-300 mb-4" />
+            
+            <RadioGroup value={selectedValue} onValueChange={handleChange} className="space-y-4">
                 {filterData.map((data, index) => (
                     <div key={index}>
-                        <h1 className='font-medium text-lg'>{data.filterType}</h1>
-                        {data.array.map((item, idx) => {
-                            const itemId = `r${index}-${idx}`; // Ensure unique id for each radio button
-                            return (
-                                <div key={idx} className="flex items-center space-x-2 my-2">
-                                    <RadioGroupItem value={item} id={itemId} />
-                                    <Label htmlFor={itemId}>{item}</Label>
-                                </div>
-                            );
-                        })}
+                        <h1 className="font-semibold text-md text-gray-700 mb-2">{data.filterType}</h1>
+                        <div className="flex flex-col space-y-1">
+                            {data.array.map((item, idx) => {
+                                const itemId = `r${index}-${idx}`;
+                                return (
+                                    <div
+                                        key={idx}
+                                        className="flex items-center space-x-2 p-1.5 rounded-md hover:bg-gray-100 transition-all duration-200 cursor-pointer"
+                                    >
+                                        <RadioGroupItem value={item} id={itemId} className="accent-[#6A38C2] w-4 h-4" />
+                                        <Label htmlFor={itemId} className="text-gray-800 text-sm font-medium">{item}</Label>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 ))}
             </RadioGroup>

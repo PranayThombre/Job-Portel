@@ -1,74 +1,80 @@
-import React, { useEffect, useState } from 'react'
-import Navbar from './shared/Navbar'
-import FilterCard from './FilterCard'
-import Job from './Job'
-import Footer from './shared/Footer'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import Jobnotfound from './Jobnotfound'
+import React, { useEffect, useState } from "react";
+import Navbar from "./shared/Navbar";
+import FilterCard from "./FilterCard";
+import Job from "./Job";
+import Footer from "./shared/Footer";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import Jobnotfound from "./Jobnotfound";
 
 const Jobs = () => {
-    const { authUser } = useSelector((store) => store.auth);
-    const { allJobs, searchText } = useSelector((store) => store.job);
-    const [filterJobs, setFilterJobs] = useState(allJobs);
-    const navigate = useNavigate();
+  const { authUser } = useSelector((store) => store.auth);
+  const { allJobs, searchText } = useSelector((store) => store.job);
+  const [filterJobs, setFilterJobs] = useState(allJobs);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        if (searchText) {
-            const filteredJobs = allJobs.filter((job) => {
-                return job.title.toLowerCase().includes(searchText.toLowerCase()) ||
-                    job.description.toLowerCase().includes(searchText.toLowerCase()) ||
-                    job?.location?.toLowerCase().includes(searchText.toLowerCase())
-            })
-            setFilterJobs(filteredJobs);
-        } else {
-            setFilterJobs(allJobs);
-        }
-    }, [allJobs, searchText]);
+  useEffect(() => {
+    if (searchText) {
+      const filteredJobs = allJobs.filter((job) => {
+        return (
+          job.title.toLowerCase().includes(searchText.toLowerCase()) ||
+          job.description.toLowerCase().includes(searchText.toLowerCase()) ||
+          job?.location?.toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
+      setFilterJobs(filteredJobs);
+    } else {
+      setFilterJobs(allJobs);
+    }
+  }, [allJobs, searchText]);
 
+  useEffect(() => {
+    if (authUser?.role === "recruiter") {
+      navigate("/admin/jobs");
+    }
+  }, [authUser, navigate]);
 
-    useEffect(() => {
-        if (authUser?.role === 'recruiter') {
-            navigate("/admin/jobs");
-        }
-    })
-    return (
-        <div className='bg-gray-100 h-screen'>
-            <Navbar />
-            <div className='max-w-7xl mx-auto mt-5'>
-                <div className='flex gap-5'>
-                    <div className='w-[20%]'>
-                        <FilterCard />
-                    </div>
-                    {
-                        filterJobs?.length <= 0 ? <Jobnotfound /> : (
-                            <div className='flex-1 h-[88vh] overflow-y-auto  no-scrollbar pb-5'>
-                                <div className='grid grid-cols-3 gap-4'>
-                                    {
-                                        filterJobs && filterJobs?.map((job) => (
-                                            <motion.div
-                                                key={job._id}
-                                                initial={{ opacity: 0, x: 100 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -100 }}
-                                                transition={{ duration: 0.3 }}
-                                            >
-                                                <Job job={job} />
-                                            </motion.div>
-                                        ))
-                                    }
+  return (
+    <div className="bg-gray-100 min-h-screen">
+      <Navbar />
 
-                                </div>
-                            </div>
-                        )
-                    }
+      <div className="max-w-7xl mx-auto mt-10 px-4 md:px-0">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar Filters */}
+          <div className="w-full lg:w-[25%] ml-4 ">
+            <FilterCard />
+          </div>
 
-                </div> 
-            </div>
+          {/* Jobs Grid */}
+          <div className="flex-1 min-h-[80vh] overflow-y-auto no-scrollbar pb-10 ">
+            {filterJobs?.length <= 0 ? (
+              <Jobnotfound />
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
+                {filterJobs.map((job) => (
+                  <motion.div
+                    key={job._id}
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -50 }}
+                    transition={{ duration: 0.4, ease: "easeInOut" }}
+                  >
+                    <Job job={job} />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
+      </div>
 
-            )
-}
+      {/* Footer */}
+      <div className="mt-12">
+        <Footer />
+      </div>
+    </div>
+  );
+};
 
-            export default Jobs
+export default Jobs;

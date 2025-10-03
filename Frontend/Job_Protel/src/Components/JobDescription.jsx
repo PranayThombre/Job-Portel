@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { setSingleJobById } from '@/redux/jobSlice';
 import { useParams } from 'react-router-dom';
+import { Clock, MapPin, Briefcase } from 'lucide-react';
 
 const JobDescription = () => {
   const { singleJobById } = useSelector(store => store.job);
@@ -20,16 +21,16 @@ const JobDescription = () => {
   const applyJobHandler = async () => {
     try {
       axios.defaults.withCredentials = true;
-      const res = await axios.get(`http://localhost:8000/api/v1/application/apply/${params.id}`);
+      const res = await axios.get(`http://localhost:3000/api/v1/application/apply/${params.id}`);
       if (res.data.success) {
-        setIsApplied(true); // Update the local state
+        setIsApplied(true);
         const updatedJob = { ...singleJobById, applications: [...singleJobById.applications, { applicant: authUser._id }] };
-        dispatch(setSingleJobById(updatedJob)); // Update the Redux state
+        dispatch(setSingleJobById(updatedJob));
         toast.success(res.data.message);
       }
     } catch (error) {
       console.log(error);
-      toast.error(error.response.data.message);
+      toast.error( "Please Login first");
     }
   };
 
@@ -37,10 +38,10 @@ const JobDescription = () => {
     const fetchSingleJob = async () => {
       try {
         axios.defaults.withCredentials = true;
-        const res = await axios.get(`http://localhost:8000/api/v1/job/${params.id}`);
+        const res = await axios.get(`http://localhost:3000/api/v1/job/${params.id}`);
         if (res.data.success) {
           dispatch(setSingleJobById(res.data.job));
-          setIsApplied(res.data.job.applications.some(application => application.applicant === authUser?._id)); // Ensure the state is in sync with fetched data
+          setIsApplied(res.data.job.applications.some(application => application.applicant === authUser?._id));
         }
       } catch (error) {
         console.log(error);
@@ -50,41 +51,71 @@ const JobDescription = () => {
   }, [params.id, dispatch, authUser?._id]);
 
   return (
-    <div className='max-w-7xl mx-auto my-10'>
-      <div className='flex items-center justify-between'>
+    <div className='max-w-5xl mx-auto my-12 p-6 bg-white rounded-2xl shadow-lg'>
+      {/* Header */}
+      <div className='flex flex-col md:flex-row items-start md:items-center justify-between gap-4'>
         <div>
-          <h1 className='font-bold text-xl '>{singleJobById?.title}</h1>
-          <div className='flex items-center gap-2 my-2'>
-            <Badge className={'text-blue-700 font-bold'} variant={'ghost'}>{singleJobById?.position} Positions</Badge>
-            <Badge className={'text-[#F83002] font-bold'} variant={'ghost'}>{singleJobById?.jobType}</Badge>
-            <Badge className={'text-[#7209b7] font-bold'} variant={'ghost'}>{singleJobById?.salary} LPA</Badge>
+          <h1 className='text-3xl md:text-4xl font-extrabold text-gray-900'>{singleJobById?.title}</h1>
+          <div className='flex flex-wrap gap-3 mt-3'>
+            <Badge className='text-blue-700 font-semibold' variant='ghost'>{singleJobById?.position} Positions</Badge>
+            <Badge className='text-[#F83002] font-semibold' variant='ghost'>{singleJobById?.jobType}</Badge>
+            <Badge className='text-[#7209b7] font-semibold' variant='ghost'>{singleJobById?.salary} LPA</Badge>
           </div>
         </div>
         <Button
           onClick={isApplied ? null : applyJobHandler}
           disabled={isApplied}
-          className={`rounded-lg ${isApplied ? "bg-gray-600 cursor-not-allowed" : "bg-[#7209b7] hover:bg-[#5f32ad]"}`}
+          className={`rounded-lg px-6 py-3 font-medium text-white transition-all duration-300 ${
+            isApplied ? "bg-gray-500 cursor-not-allowed" : "bg-[#7209b7] hover:bg-[#5f32ad]"
+          }`}
         >
           {isApplied ? "Already Applied" : "Apply Now"}
         </Button>
       </div>
-      <div className='my-4'>
-        <h1 className='border-b-2 pb-1 border-b-gray-300 font-medium'>Job Description</h1>
-      </div>
-      <div>
-        <h1 className='font-bold my-1'>Role: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.title}</span></h1>
-        <h1 className='font-bold my-1'>Location: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.location}</span></h1>
-        <h1 className='font-bold my-1'>Description: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.description}</span></h1>
-        <h1 className='font-bold my-1'>Experience: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.experienceLevel}</span></h1>
-        <h1 className='font-bold my-1'>Salary: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.salary} LPA</span></h1>
-        <h1 className='font-bold my-1'>Total Applicants: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.applications?.length}</span></h1>
-        <h1 className='font-bold my-1'>Posted Date: <span className='pl-4 font-normal text-gray-800'>{singleJobById?.createdAt.split("T")[0]}</span></h1>
-      </div>
-      <div>
-        {/* <ApplyJobDialog open={open} setOpen={setOpen} /> */}
+
+      {/* Divider */}
+      <hr className='my-6 border-gray-300' />
+
+      {/* Job Details */}
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className='space-y-3'>
+          <div className='flex items-center gap-2'>
+            <Briefcase className='text-gray-500' />
+            <span className='font-semibold text-gray-700'>Role:</span>
+            <span className='text-gray-800'>{singleJobById?.title}</span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <MapPin className='text-gray-500' />
+            <span className='font-semibold text-gray-700'>Location:</span>
+            <span className='text-gray-800'>{singleJobById?.location}</span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <Clock className='text-gray-500' />
+            <span className='font-semibold text-gray-700'>Experience:</span>
+            <span className='text-gray-800'>{singleJobById?.experienceLevel}</span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <span className='font-semibold text-gray-700'>Salary:</span>
+            <span className='text-gray-800'>{singleJobById?.salary} LPA</span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <span className='font-semibold text-gray-700'>Total Applicants:</span>
+            <span className='text-gray-800'>{singleJobById?.applications?.length}</span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <span className='font-semibold text-gray-700'>Posted Date:</span>
+            <span className='text-gray-800'>{singleJobById?.createdAt?.split("T")[0]}</span>
+          </div>
+        </div>
+
+        {/* Job Description */}
+        <div className='bg-gray-50 p-5 rounded-xl shadow-inner'>
+          <h2 className='text-xl font-semibold mb-2 border-b pb-2 border-gray-300'>Job Description</h2>
+          <p className='text-gray-700 leading-relaxed whitespace-pre-line'>{singleJobById?.description}</p>
+        </div>
       </div>
     </div>
   );
-}
+};
 
 export default JobDescription;

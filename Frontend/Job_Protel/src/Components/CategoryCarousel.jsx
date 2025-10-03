@@ -42,5 +42,7 @@ export function CategoryCarousel() {
             <CarouselPrevious />
             <CarouselNext />
         </Carousel>
+
+        
     )
 }

@@ -6,34 +6,65 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import { useSelector } from "react-redux"
+} from "@/components/ui/table";
+import { useSelector } from "react-redux";
 import { Badge } from "./ui/badge";
- 
+
 const ApplicationTable = () => {
-    const {allAppliedJobs} = useSelector(store=>store.application);
+    const { allAppliedJobs } = useSelector((store) => store.application);
+
     return (
-        <Table className="bg-white border border-gray-200">
-            <TableCaption className="my-2">A list of your recent applied jobs</TableCaption>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Job Role</TableHead>
-                    <TableHead>Company</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {allAppliedJobs && allAppliedJobs?.map((appliedjob) => (
-                    <TableRow key={appliedjob?._id}>
-                        <TableCell>{appliedjob?.createdAt.split("T")[0]}</TableCell>
-                        <TableCell>{appliedjob?.job?.title}</TableCell>
-                        <TableCell>{appliedjob?.job?.company?.name}</TableCell>
-                        <TableCell className="text-right"><Badge className={`${appliedjob?.status === 'rejected' ? 'bg-red-400' : appliedjob?.status === 'pending' ? 'bg-gray-400' : 'bg-green-400'}`}>{appliedjob?.status?.toUpperCase()}</Badge></TableCell>
+        <div className="overflow-x-auto rounded-2xl shadow-lg bg-white border border-gray-200">
+            <Table className="min-w-full">
+                <TableCaption className="text-gray-500 py-2 ">
+                    A list of your recently applied jobs
+                </TableCaption>
+
+                <TableHeader className="bg-gray-100">
+                    <TableRow>
+                        <TableHead className="text-left px-4 py-2">Date</TableHead>
+                        <TableHead className="text-left px-4 py-2">Job Role</TableHead>
+                        <TableHead className="text-left px-4 py-2">Company</TableHead>
+                        <TableHead className="text-right px-4 py-2">Status</TableHead>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    )
-}
+                </TableHeader>
+
+                <TableBody>
+                    {allAppliedJobs && allAppliedJobs.length > 0 ? (
+                        allAppliedJobs.map((appliedjob) => (
+                            <TableRow
+                                key={appliedjob?._id}
+                                className="hover:bg-gray-50 transition-all duration-200"
+                            >
+                                <TableCell className="px-4 py-2">{appliedjob?.createdAt.split("T")[0]}</TableCell>
+                                <TableCell className="px-4 py-2 font-medium">{appliedjob?.job?.title}</TableCell>
+                                <TableCell className="px-4 py-2">{appliedjob?.job?.company?.name}</TableCell>
+                                <TableCell className="px-4 py-2 text-right">
+                                    <Badge
+                                        className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                                            appliedjob?.status === "rejected"
+                                                ? "bg-red-100 text-red-700"
+                                                : appliedjob?.status === "pending"
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : "bg-green-100 text-green-700"
+                                        }`}
+                                    >
+                                        {appliedjob?.status?.toUpperCase()}
+                                    </Badge>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={4} className="text-center py-4 text-gray-500">
+                                No applied jobs found.
+                            </TableCell>
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+        </div>
+    );
+};
+
 export default ApplicationTable;
