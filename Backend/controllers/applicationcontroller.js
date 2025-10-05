@@ -11,6 +11,7 @@ export const applyjob = async (req, res) => {
     console.log("Job ID:", req.params.id);
 
     if (!mongoose.Types.ObjectId.isValid(jobId)) {
+      console.log("Invalid ID format detected!");
       return res.status(400).json({
         success: false,
         message: "Invalid Job ID",
@@ -21,8 +22,6 @@ export const applyjob = async (req, res) => {
       job: jobId,
       applicant: userId,
     });
-
-    
 
     if (existingApplication) {
       return res.status(400).json({
@@ -44,7 +43,7 @@ export const applyjob = async (req, res) => {
       applicant: userId,
     });
 
-    job.application.push(newApplication._id);
+    job.applications.push(newApplication._id);
     await job.save();
 
     return res.status(200).json({
@@ -71,6 +70,8 @@ export const getAppliedJob = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
+    console.log(applications); // <-- Add this
+
     if (!applications || applications.length === 0) {
       return res.status(404).json({
         success: false,
@@ -81,7 +82,7 @@ export const getAppliedJob = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "All applied jobs retrieved",
-      applications,
+      applications, // <-- This is what React uses
     });
   } catch (error) {
     console.log(error);
@@ -91,6 +92,7 @@ export const getAppliedJob = async (req, res) => {
     });
   }
 };
+
 
 // Get all applicants for a job (Admin)
 export const getApplicants = async (req, res) => {
@@ -105,7 +107,7 @@ export const getApplicants = async (req, res) => {
     }
 
     const job = await Job.findById(jobId).populate({
-      path: "application",
+      path: "applications", // ✅ use plural
       populate: { path: "applicant" },
     });
 

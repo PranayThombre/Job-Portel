@@ -21,7 +21,8 @@ export const isAuthenticated = async (req, res, next) => {
       });
     }
 
-    req.id = decoded.userId; // make sure your JWT has `userId`
+    req.id = decoded.userId || decoded.id;
+ // make sure your JWT has `userId`
     next();
   } catch (error) {
     console.error("Auth error:", error);

@@ -1,47 +1,63 @@
-
 import mongoose from "mongoose";
 import { Job } from "../models/jobmodel.js";
 
 export const postJob = async (req, res) => {
-    try {
-        const { title, description, requirement, salary, location, experience, position, jobType, companyId } = req.body;
-        const userId = req.id; // Authenticated user
+  try {
+    const {
+      title,
+      description,
+      requirements,
+      salary,
+      location,
+      experienceLevel,
+      position,
+      jobType,
+      companyId,
+    } = req.body;
 
-        if(!title || !description || !requirement || !salary || !location || !experience || !position || !jobType || !companyId) {
-            return res.status(400).json({
-                message: "Something is missing",
-                success: false
-            });
-        }
-
-        const job = await Job.create({
-            title,
-            description,
-            requirement: requirement.split(","), // Ensure comma separated in JSON
-            salary: Number(salary),
-            location,
-            jobType,
-            experienceLevel: experience,
-            position,
-            company: companyId,
-            created_by: userId
-        });
-
-        return res.status(200).json({
-            success: true,
-            job,
-            message: "New Job created successfully"
-        });
-
-    } catch (error) {
-        console.log(error); // Check the real error here
-        return res.status(500).json({
-            success: false,
-            message: "Something went wrong during job creation"
-        });
+    if (
+      !title ||
+      !description ||
+      !requirements ||
+      !salary ||
+      !location ||
+      !experienceLevel ||
+      !position ||
+      !jobType ||
+      !companyId
+    ) {
+      return res.status(400).json({
+        message: "Something is missing",
+        success: false,
+      });
     }
-}
 
+    const job = await Job.create({
+      title,
+      description,
+      requirement: requirements.split(",").map((r) => r.trim()), // convert string to array
+      salary: Number(salary),
+      location,
+      jobType,
+      experienceLevel: Number(experienceLevel),
+      position: Number(position),
+      company: companyId,
+      created_by: req.id,
+    });
+
+    return res.status(200).json({
+      success: true,
+      job,
+      message: "New Job created successfully",
+    });
+  } catch (error) {
+    console.log(error); // Check the real error here
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong during job creation",
+    });
+  }
+};
 
 export const getAllJobs = async (req, res) => {
   try {
@@ -53,9 +69,9 @@ export const getAllJobs = async (req, res) => {
       ],
     };
 
- const jobs = await Job.find(query)
-  .populate({ path: "company" })
-  .sort({ createdAt: -1 });
+    const jobs = await Job.find(query)
+      .populate({ path: "company" })
+      .sort({ createdAt: -1 });
 
     if (!jobs) {
       return res.status(404).json({
