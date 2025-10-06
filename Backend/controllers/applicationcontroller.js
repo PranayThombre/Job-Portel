@@ -7,7 +7,7 @@ export const applyJob = async (req, res) => {
     const userId = req.id; // ✅ set by middleware
     const { id: jobId } = req.params; // ✅ FIXED: use req.params
 
-    console.log("Apply Job Debug:", { userId, jobId });
+   // console.log("Apply Job Debug:", { userId, jobId });
 
     if (!jobId) {
       return res.status(400).json({ success: false, message: "Job ID required" });
@@ -65,7 +65,7 @@ export const getAppliedJob = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
-    console.log(applications); // <-- Add this
+    //console.log(applications); // <-- Add this
 
     if (!applications || applications.length === 0) {
       return res.status(404).json({

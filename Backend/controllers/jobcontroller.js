@@ -35,7 +35,9 @@ export const postJob = async (req, res) => {
     const job = await Job.create({
       title,
       description,
-      requirement: requirements.split(",").map((r) => r.trim()), // convert string to array
+      requirement: Array.isArray(requirements)
+        ? requirements
+        : requirements.split(",").map((r) => r.trim()), // convert string to array
       salary: Number(salary),
       location,
       jobType,
