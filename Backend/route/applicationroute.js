@@ -1,11 +1,11 @@
 import express from "express";
 import { isAuthenticated } from "../auth/isAuthenticated.js";
-import { applyjob, getApplicants, getAppliedJob, updateStatus } from "../controllers/applicationcontroller.js";
+import { applyJob, getApplicants, getAppliedJob, updateStatus } from "../controllers/applicationcontroller.js";
 
 const router = express.Router();
 
 // Apply for job
-router.get("/apply/:id", isAuthenticated, applyjob);
+router.get("/apply/:id", isAuthenticated, applyJob);
 
 // Get all applied jobs of the authenticated user
 router.get("/get", isAuthenticated, getAppliedJob);
