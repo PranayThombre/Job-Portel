@@ -40,12 +40,12 @@ const ApplicantsTable = () => {
             <TableCaption>A list of your recent applied user</TableCaption>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Full Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Contact</TableHead>
-                    <TableHead>Resume</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
+                    <TableHead className="text-center">Full Name</TableHead>
+                    <TableHead className="text-center">Email</TableHead>
+                    <TableHead className="text-center">Contact</TableHead>
+                    <TableHead className="text-center">Resume</TableHead>
+                    <TableHead className="text-center">Date</TableHead>
+                    <TableHead className="text-center">Action</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
