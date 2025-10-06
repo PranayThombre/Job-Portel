@@ -39,9 +39,9 @@ const CompaniesTable = () => {
       <TableCaption>A list of your recent registered companies</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead>Logo</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Date</TableHead>
+          <TableHead className="text-center">Logo</TableHead>
+          <TableHead className="text-center">Name</TableHead>
+          <TableHead className="text-center">Date</TableHead>
           <TableHead className="text-right">Action</TableHead>
         </TableRow>
       </TableHeader>

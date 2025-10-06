@@ -31,10 +31,10 @@ const JobTable = () => {
         <Table>
             <TableCaption>A list of your recent posted jobs</TableCaption>
             <TableHeader>
-                <TableRow>
-                    <TableHead>Company Name</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Date</TableHead>
+                <TableRow >
+                    <TableHead className="text-center">Company Name</TableHead>
+                    <TableHead className="text-center">Role</TableHead>
+                    <TableHead className="text-center">Date</TableHead>
                     <TableHead className="text-right">Action</TableHead>
                 </TableRow>
             </TableHeader>
@@ -46,9 +46,9 @@ const JobTable = () => {
                         exit={{ x: -100 }}
                         transition={{ duration: 0.5 }}
                         key={job?._id}>
-                        <TableCell>{job?.company?.name}</TableCell>
-                        <TableCell>{job?.title}</TableCell>
-                        <TableCell>{job?.createdAt.split("T")[0]}</TableCell>
+                        <TableCell className="items-center">{job?.company?.name}</TableCell>
+                        <TableCell className="items-center">{job?.title}</TableCell>
+                        <TableCell className="items-center">{job?.createdAt.split("T")[0]}</TableCell>
                         <TableCell className="float-right cursor-pointer">
                             <Popover>
                                 <PopoverTrigger><MoreHorizontal /></PopoverTrigger>

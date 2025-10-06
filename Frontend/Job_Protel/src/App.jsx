@@ -69,6 +69,11 @@ const appRouter = createBrowserRouter([
     path:"/admin/companies/:id",
     element:<ProtectedRoute><CompanySetup/></ProtectedRoute> 
   },
+   {
+    future: {
+      v7_startTransition: true, // 👈 enable the upcoming feature
+    },
+  },
 ])
 
 function App() {

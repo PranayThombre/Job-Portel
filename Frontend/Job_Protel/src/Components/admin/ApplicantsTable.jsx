@@ -49,7 +49,7 @@ const ApplicantsTable = () => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {applicants && applicants?.applications?.map((item) => (
+                {applicants && applicants?.application?.map((item) => (
                     <motion.tr
                         initial={{ x: -100 }}
                         animate={{ x: 0 }}

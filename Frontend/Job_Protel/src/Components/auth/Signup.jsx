@@ -108,6 +108,7 @@ const Signup = () => {
                 onChange={changeEventHandler}
                 placeholder="+91 9876543210"
                 className="mt-1"
+                required
               />
             </div>
             <div>
