@@ -2,6 +2,8 @@ JobMitra 🚀
 
 JobMitra is a modern, responsive, and user-friendly job portal web application that connects job seekers with employers efficiently. Built using the MERN stack (MongoDB, Express.js, React.js, Node.js), it offers a seamless experience for browsing, posting, and applying for jobs.
 
+
+
 Features ✨
 
 User Authentication: Sign up and login for job seekers and recruiters.
@@ -19,6 +21,8 @@ Admin Panel: Manage users, jobs, and application data efficiently.
 
 Real-time Notifications: Get notified about new job postings and application updates.
 
+
+
 Tech Stack 🛠️
 
 Frontend: React.js, Tailwind CSS, Redux, Axios
@@ -29,7 +33,9 @@ Database: MongoDB
 
 Authentication: JWT (JSON Web Tokens)
 
-Deployment: Render / Netlify
+
+
+Deployment: Render / Vercel
 
 Installation & Setup ⚡
 
@@ -52,6 +58,8 @@ Frontend Setup:
 cd frontend
 npm install
 npm start
+
+
 
 
 Access the app:
