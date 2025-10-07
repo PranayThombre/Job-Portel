@@ -7,6 +7,7 @@ import axios from "axios";
 import { setSingleJobById } from "@/redux/jobSlice";
 import { useParams } from "react-router-dom";
 import { Clock, MapPin, Briefcase } from "lucide-react";
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const JobDescription = () => {
@@ -14,7 +15,7 @@ const JobDescription = () => {
   const { authUser } = useSelector((store) => store.auth);
 
   const isInitiallyApplied =
-    singleJobById?.applications?.some(
+    (singleJobById?.applications || []).some(
       (application) => application.applicant === authUser?._id
     ) || false;
   const [isApplied, setIsApplied] = useState(isInitiallyApplied);
@@ -22,45 +23,44 @@ const JobDescription = () => {
   const dispatch = useDispatch();
   const params = useParams();
 
+  // ================= Apply Job Handler =================
   const applyJobHandler = async () => {
-    try {
-      axios.defaults.withCredentials = true;
-      const res = await axios.get(
-        `${API_BASE_URL}/api/v1/application/apply/${params.id}`,
-        { applicant: authUser?._id } // ✅ send the logged-in user ID
-      );
-      console.log("Job ID:", params.id);
-
-
-      if (res.data.success) {
-        setIsApplied(true);
-        const updatedJob = {
-          ...singleJobById,
-          applications: [
-            ...(singleJobById.applications || []),
-            { applicant: authUser._id },
-          ],
-        };
-        dispatch(setSingleJobById(updatedJob));
-        toast.success(res.data.message);
+  try {
+    const res = await axios.get(
+      `${API_BASE_URL}/api/v1/application/apply/${params.id}`,
+      {
+        withCredentials: true,  // SEND cookies to backend
       }
-    } catch (error) {
-      console.log(error);
-      toast.error("Please login first");
-    }
-  };
+    );
 
+    if (res.data.success) {
+      setIsApplied(true);
+      toast.success(res.data.message);
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || "Please login first");
+  }
+};
+
+
+
+  // ================= Fetch Single Job =================
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
-        axios.defaults.withCredentials = true;
-        const res = await axios.get(
-          `${API_BASE_URL}/api/v1/job/${params.id}`
-        );
+        const token = localStorage.getItem("token");
+
+        const res = await axios.get(`${API_BASE_URL}/api/v1/job/${params.id}`, {
+          headers: {
+            Authorization: token ? `Bearer ${token}` : "",
+          },
+          withCredentials: true,
+        });
+
         if (res.data.success) {
           dispatch(setSingleJobById(res.data.job));
           setIsApplied(
-            res.data.job.applications.some(
+            (res.data.job.applications || []).some(
               (application) => application.applicant === authUser?._id
             )
           );
@@ -69,9 +69,11 @@ const JobDescription = () => {
         console.log(error);
       }
     };
+
     fetchSingleJob();
   }, [params.id, dispatch, authUser?._id]);
 
+  // ================= Render =================
   return (
     <div className="max-w-5xl mx-auto my-12 p-6 bg-white rounded-2xl shadow-lg">
       {/* Header */}
@@ -137,7 +139,7 @@ const JobDescription = () => {
               Total Applicants:
             </span>
             <span className="text-gray-800">
-              {singleJobById?.applications?.length}
+              {singleJobById?.applications?.length || 0}
             </span>
           </div>
           <div className="flex items-center gap-2">
