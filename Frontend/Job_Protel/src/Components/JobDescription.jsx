@@ -25,36 +25,27 @@ const JobDescription = () => {
 
   // ================= Apply Job Handler =================
   const applyJobHandler = async () => {
-  try {
-    const res = await axios.get(
-      `${API_BASE_URL}/api/v1/application/apply/${params.id}`,
-      {
-        withCredentials: true,  // SEND cookies to backend
+    try {
+      const res = await axios.get(
+        `${API_BASE_URL}/api/v1/application/apply/${params.id}`,
+        { withCredentials: true } // send cookies
+      );
+
+      if (res.data.success) {
+        setIsApplied(true);
+        toast.success(res.data.message);
       }
-    );
-
-    if (res.data.success) {
-      setIsApplied(true);
-      toast.success(res.data.message);
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Please login first");
     }
-  } catch (error) {
-    toast.error(error.response?.data?.message || "Please login first");
-  }
-};
-
-
+  };
 
   // ================= Fetch Single Job =================
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
-        const token = localStorage.getItem("token");
-
         const res = await axios.get(`${API_BASE_URL}/api/v1/job/${params.id}`, {
-          headers: {
-            Authorization: token ? `Bearer ${token}` : "",
-          },
-          withCredentials: true,
+          withCredentials: true, // send cookies
         });
 
         if (res.data.success) {
