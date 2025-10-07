@@ -17,18 +17,18 @@ export const register = async (req, res) => {
     const fileUri = getDataUri(file);
     const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
-        if (!file) {
-      return res.status(400).json({ success: false, message: "Profile picture is required" });
+    if (!file) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Profile picture is required" });
     }
 
     const user = await User.findOne({ email });
     if (user)
-      return res
-        .status(400)
-        .json({
-          message: "User already exist with this email",
-          success: false,
-        });
+      return res.status(400).json({
+        message: "User already exist with this email",
+        success: false,
+      });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -103,9 +103,10 @@ export const login = async (req, res) => {
     return res
       .status(200)
       .cookie("token", token, {
-        maxAge: 1 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        httpOnly: true, // JS cannot access
+        sameSite: "none", // allow cross-site cookies
+        secure: true, // required for HTTPS
       })
       .json({
         message: `Welcome back ${user.fullname}`,

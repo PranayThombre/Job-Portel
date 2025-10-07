@@ -19,15 +19,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// CORS configuration
+// ✅ CORS configuration for localhost & production
 const allowedOrigins = [
-  "http://localhost:5173",
-  "https://job-portel-one.vercel.app"
+  "http://localhost:5173",                // dev
+  "https://job-portel-one.vercel.app"    // deployed frontend
 ];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // allow requests with no origin (like Postman)
+    // allow requests with no origin (like Postman or server-to-server)
     if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
@@ -36,7 +36,7 @@ const corsOptions = {
       callback(new Error("Not allowed by CORS"));
     }
   },
-  credentials: true,
+  credentials: true,  // must be true to send cookies
 };
 
 app.use(cors(corsOptions));
@@ -44,21 +44,22 @@ app.use(cors(corsOptions));
 // connect database
 connectDB();
 
-// routes
+// ✅ Routes
 app.use("/api/v1/user", userroute);
 app.use("/api/v1/company", companyroute);
 app.use("/api/v1/job", jobroute);
 app.use("/api/v1/application", applicationroute);
 
+// simple root route
 app.get("/", (req, res) => {
   return res.status(200).json({
     success: true,
-    message: "Starting of your first project",
+    message: "Backend is running",
   });
 });
 
+// start server
 const PORT = process.env.PORT || 4000;
-
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
