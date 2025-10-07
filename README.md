@@ -5,7 +5,6 @@ JobMitra is a modern, responsive, and user-friendly job portal web application t
 Features ✨
 
 User Authentication: Sign up and login for job seekers and recruiters.
-
 Job Listings: Employers can post jobs; job seekers can browse jobs by category, location, or experience.
 
 Resume Upload & Management: Job seekers can upload and manage their resumes.
