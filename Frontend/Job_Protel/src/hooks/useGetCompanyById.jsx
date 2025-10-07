@@ -2,6 +2,7 @@ import { setSingleCompany } from "@/redux/companySlice";
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const useGetCompanyById = (id) => {
     const dispatch = useDispatch();
@@ -9,7 +10,7 @@ const useGetCompanyById = (id) => {
         const fetchCompanyDetails = async () => {
             try {
                 axios.defaults.withCredentials = true;
-                const res = await axios.get(`http://localhost:3000/api/v1/company/get/${id}`);
+                const res = await axios.get(`${API_BASE_URL}/api/v1/company/get/${id}`);
                 if(res.data.success){
                     dispatch(setSingleCompany(res.data.company));
                 }

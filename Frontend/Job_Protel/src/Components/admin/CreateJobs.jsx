@@ -5,6 +5,7 @@ import Navbar from "../shared/Navbar";
 import { Button } from "../ui/button";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 import { setLoading } from "@/redux/authSlice";
 import {
   Select,
@@ -60,7 +61,7 @@ const CreateJobs = () => {
     try {
       dispatch(setLoading(true));
       const res = await axios.post(
-        "http://localhost:3000/api/v1/job/post",
+        `${API_BASE_URL}/api/v1/job/post`,
         payload,
         {
           headers: { "Content-Type": "application/json" },

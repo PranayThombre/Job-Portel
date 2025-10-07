@@ -2,6 +2,8 @@ import { setAdminJobs } from "@/redux/jobSlice";
 import axios from "axios";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+
 
 const useGetAllAdminJobs = () => {
     const dispatch = useDispatch();
@@ -10,7 +12,7 @@ const useGetAllAdminJobs = () => {
         const fetchAdminJobs = async () => {
             try {
                 const res = await axios.get(
-                    'http://localhost:3000/api/v1/job/admin', // corrected route
+                    `${API_BASE_URL}/api/v1/job/admin`, // corrected route
                     { withCredentials: true }
                 );
                 if (res.data.success) { 

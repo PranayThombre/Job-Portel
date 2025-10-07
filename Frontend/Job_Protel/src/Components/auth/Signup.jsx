@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from '@/redux/authSlice';
 import { Loader2 } from 'lucide-react';
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const Signup = () => {
   const [input, setInput] = useState({
@@ -43,7 +44,7 @@ const Signup = () => {
 
     try {
       dispatch(setLoading(true));
-      const res = await axios.post("http://localhost:3000/api/v1/user/register", formData, {
+      const res = await axios.post(`${API_BASE_URL}/api/v1/user/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });

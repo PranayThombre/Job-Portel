@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 import useGetCompanyById from "@/hooks/useGetCompanyById";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const CompanySetup = () => {
   const params = useParams();
@@ -73,7 +74,7 @@ const CompanySetup = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:3000/api/v1/company/update/${params.id}`,
+        `${API_BASE_URL}/api/v1/company/update/${params.id}`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

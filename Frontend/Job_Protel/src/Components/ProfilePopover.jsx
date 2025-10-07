@@ -11,6 +11,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setAuthUser } from "@/redux/authSlice";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 export function ProfilePopover() {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ export function ProfilePopover() {
   const { authUser } = useSelector((store) => store.auth);
   const logoutHandler = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/v1/user/logout", {
+      const res = await axios.get(`${API_BASE_URL}/api/v1/user/logout`, {
         withCredentials: true,
       });
 

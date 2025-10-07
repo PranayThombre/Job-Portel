@@ -7,6 +7,7 @@ import axios from "axios";
 import { setSingleJobById } from "@/redux/jobSlice";
 import { useParams } from "react-router-dom";
 import { Clock, MapPin, Briefcase } from "lucide-react";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 const JobDescription = () => {
   const { singleJobById } = useSelector((store) => store.job);
@@ -25,7 +26,7 @@ const JobDescription = () => {
     try {
       axios.defaults.withCredentials = true;
       const res = await axios.get(
-        `http://localhost:3000/api/v1/application/apply/${params.id}`,
+        `${API_BASE_URL}/api/v1/application/apply/${params.id}`,
         { applicant: authUser?._id } // ✅ send the logged-in user ID
       );
       console.log("Job ID:", params.id);
@@ -54,7 +55,7 @@ const JobDescription = () => {
       try {
         axios.defaults.withCredentials = true;
         const res = await axios.get(
-          `http://localhost:3000/api/v1/job/${params.id}`
+          `${API_BASE_URL}/api/v1/job/${params.id}`
         );
         if (res.data.success) {
           dispatch(setSingleJobById(res.data.job));

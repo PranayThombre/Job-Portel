@@ -10,6 +10,7 @@ import {
 import { MoreHorizontal } from "lucide-react";
 import { useSelector } from "react-redux"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -23,7 +24,7 @@ const ApplicantsTable = () => {
 
     const statusHandler = async (status, id) => {
         try {
-            const res = await axios.put(`http://localhost:3000/api/v1/application/status/${id}`, {status}, {
+            const res = await axios.put(`${API_BASE_URL}/api/v1/application/status/${id}`, {status}, {
                 withCredentials: true
             });
             if(res.data.success){ 
