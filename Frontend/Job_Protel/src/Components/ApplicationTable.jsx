@@ -6,7 +6,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/Components/ui/table";
 import { useSelector } from "react-redux";
 import { Badge } from "./ui/badge";
 

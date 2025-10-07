@@ -1,13 +1,13 @@
-import { Button } from "@/components/ui/button"
+import { Button } from "@/Components/ui/button"
 import {
     Dialog,
     DialogContent,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/Components/ui/dialog"
+import { Input } from "@/Components/ui/input"
+import { Label } from "@/Components/ui/label"
 import { setAuthUser, setLoading } from "@/redux/authSlice"
 import axios from "axios"
 import { Loader2 } from "lucide-react"

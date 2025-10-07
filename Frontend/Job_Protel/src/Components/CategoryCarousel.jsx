@@ -6,7 +6,7 @@ import {
     CarouselItem,
     CarouselNext,
     CarouselPrevious,
-} from "@/components/ui/carousel"
+} from "@/Components/ui/carousel"
 import { Button } from "./ui/button"
 import { useDispatch } from "react-redux"
 import { setSearchText } from "@/redux/jobSlice"
